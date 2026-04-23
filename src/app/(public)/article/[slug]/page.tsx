@@ -26,6 +26,7 @@ import {
   formatArTime,
   formatNumberAr,
   readingTimeAr,
+  safeDecode,
 } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -36,7 +37,8 @@ interface Params {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = safeDecode(rawSlug);
   const article = getArticleBySlug(slug);
   if (!article) return {};
   return {
@@ -51,7 +53,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 export default async function ArticlePage({ params }: Params) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = safeDecode(rawSlug);
   const article = getArticleBySlug(slug);
   if (!article) notFound();
   incrementViews(article.id);

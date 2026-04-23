@@ -7,6 +7,7 @@ import {
   listArticles,
   listCategories,
 } from "@/lib/articles";
+import { safeDecode } from "@/lib/utils";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -17,7 +18,8 @@ interface Params {
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = safeDecode(rawSlug);
   if (slug === "breaking") {
     return {
       title: "الأخبار العاجلة",
@@ -32,7 +34,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 const PAGE_SIZE = 12;
 
 export default async function CategoryPage({ params, searchParams }: Params) {
-  const { slug } = await params;
+  const { slug: rawSlug } = await params;
+  const slug = safeDecode(rawSlug);
   const sp = await searchParams;
 
   const categories = listCategories();
